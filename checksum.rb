@@ -109,7 +109,7 @@ def output_line(digest_name, filename, state, payload = nil)
   if payload[:progress_size]
     print "\u001b[35;1m"
     progress_time = payload[:progress_time] > 0 ? payload[:progress_time] : 1
-    print " (#{((payload[:progress_size].to_f / progress_time)/1024/1024).round(2)} MB/s)"
+    print " (#{((payload[:progress_size].to_f / progress_time)/1024/1024).round(2)} MB/s)" + " " * 5
   end
   print "\u001b[0m"
   print finish ? "\n" : "\r" 
