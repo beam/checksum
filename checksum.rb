@@ -91,21 +91,27 @@ def output_line(digest_name, filename, state, payload = nil)
   finish = true
   case state
   when :not_found
-    print "\u001b[36m"
+    print "\u001b[36;1m"
     print "[NOT FOUND]".ljust(14," ")
   when :check
     finish = false
     print "\u001b[33m"
-    print "[CHECK #{payload}%]".ljust(14," ")
+    print "[CHECK #{payload[:progress]}%]".ljust(14," ")
   when :success
-    print "\u001b[32m"
+    print "\u001b[32;1m"
     print "[SUCCESS]".ljust(14," ")
   when :failed
-    print "\u001b[31m"
+    print "\u001b[31;1m"
     print "[FAILED]".ljust(14," ")
   end
-  print "\u001b[0m"
+  print "\u001b[37;1m"
   print "#{filename}"
+  if payload[:progress_size]
+    print "\u001b[35;1m"
+    progress_time = payload[:progress_time] > 0 ? payload[:progress_time] : 1
+    print " (#{((payload[:progress_size].to_f / progress_time)/1024/1024).round(2)} MB/s)"
+  end
+  print "\u001b[0m"
   print finish ? "\n" : "\r" 
 end
 
@@ -118,13 +124,14 @@ def check_digest(definition, found_digest, search_path = ".")
   total_size = File.size(found_full_filename)
   progress_size = 0
   digester = definition[:digest].new
+  start_time = Time.now.to_i
   File.open(found_full_filename, "rb").each_chunk(CHUNK_SIZE) do |chunk|
     progress_size += chunk.size
     digester.update chunk
-    output_line(definition[:title], found_digest[:filename], :check, ((progress_size.to_f / total_size) * 100).to_i )
+    output_line(definition[:title], found_digest[:filename], :check, { progress: ((progress_size.to_f / total_size) * 100).to_i , progress_size: progress_size, progress_time: Time.now.to_i - start_time })
   end
   result = digester.hexdigest.downcase == found_digest[:digest].downcase
-  output_line(definition[:title], found_digest[:filename], result ? :success : :failed)
+  output_line(definition[:title], found_digest[:filename], result ? :success : :failed, { progress_size: total_size, progress_time: Time.now.to_i - start_time })
   return result
 end
 
