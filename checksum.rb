@@ -159,7 +159,6 @@ File.open(checksum_file, "r").each_line do |checksum_line|
   digest_defs.each { |definition|
     found_digest = find_digest(checksum_line, definition)
     if found_digest
-      puts found_digest.inspect
       check_digest(definition, found_digest, File.dirname(checksum_file))
       break
     end
