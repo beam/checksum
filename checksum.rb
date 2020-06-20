@@ -144,7 +144,7 @@ end
 def find_digest(file_line, digest_def)
   digest_def[:regexp].each { |regexp|
       match_result = file_line.strip.match(regexp)
-      return match_result if match_result
+      return { orig_filename: match_result[:filename], digest: match_result[:digest], filename: match_result[:filename].gsub(/[\/\\]/,File::SEPARATOR) } if match_result
   }
   return nil
 end
