@@ -85,7 +85,7 @@ DIGEST_DEFS = [
   },
 ]
 
-def output_line(digest_name, filename, state, payload = nil)
+def output_line(digest_name, filename, state, payload = {})
   print "\u001b[34m"
   print "[#{digest_name}]".ljust(9," ")
   finish = true
