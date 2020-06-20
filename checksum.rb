@@ -19,7 +19,7 @@ DIGEST_DEFS = [
     title: "MD5",
     regexp: [
       /^(?<digest>[a-f0-9]{32}) \*(?<filename>.+)/i,
-      /^(?<digest>[a-f0-9]{32}) (?<filename>.+)/i,
+      /^(?<digest>[a-f0-9]{32})[\s]{1,2}(?<filename>.+)/i,
       /^MD5 \((?<filename>.+)\) = (?<digest>[a-f0-9]{32})/i,
     ],
     suffix: [".md5"],
@@ -29,7 +29,7 @@ DIGEST_DEFS = [
     title: "SHA1",
     regexp: [
       /^(?<digest>[a-f0-9]{40}) \*(?<filename>.+)/i,
-      /^(?<digest>[a-f0-9]{40}) (?<filename>.+)/i,
+      /^(?<digest>[a-f0-9]{40})[\s]{1,2}(?<filename>.+)/i,
       /^SHA1 \((?<filename>.+)\) = (?<digest>[a-f0-9]{40})/i,
     ],
     suffix: [".sha"],
@@ -47,7 +47,7 @@ DIGEST_DEFS = [
     title: "SHA224",
     regexp: [
       /^(?<digest>[a-f0-9]{56}) \*(?<filename>.+)/i,
-      /^(?<digest>[a-f0-9]{56}) (?<filename>.+)/i,
+      /^(?<digest>[a-f0-9]{56})[\s]{1,2}(?<filename>.+)/i,
       /^SHA224 \((?<filename>.+)\) = (?<digest>[a-f0-9]{56})/i,
     ],
     suffix: [".sha224"],
@@ -57,7 +57,7 @@ DIGEST_DEFS = [
     title: "SHA256",
     regexp: [
       /^(?<digest>[a-f0-9]{64}) \*(?<filename>.+)/i,
-      /^(?<digest>[a-f0-9]{64}) (?<filename>.+)/i,
+      /^(?<digest>[a-f0-9]{64})[\s]{1,2}(?<filename>.+)/i,
       /^SHA256 \((?<filename>.+)\) = (?<digest>[a-f0-9]{64})/i,
     ],
     suffix: [".sha256"],
@@ -67,7 +67,7 @@ DIGEST_DEFS = [
     title: "SHA384",
     regexp: [
       /^(?<digest>[a-f0-9]{96}) \*(?<filename>.+)/i,
-      /^(?<digest>[a-f0-9]{96}) (?<filename>.+)/i,
+      /^(?<digest>[a-f0-9]{96})[\s]{1,2}(?<filename>.+)/i,
       /^SHA384 \((?<filename>.+)\) = (?<digest>[a-f0-9]{96})/i,
     ],
     suffix: [".sha384"],
@@ -77,7 +77,7 @@ DIGEST_DEFS = [
     title: "SHA512",
     regexp: [
       /^(?<digest>[a-f0-9]{128}) \*(?<filename>.+)/i,
-      /^(?<digest>[a-f0-9]{128}) (?<filename>.+)/i,
+      /^(?<digest>[a-f0-9]{128})[\s]{1,2}(?<filename>.+)/i,
       /^SHA512 \((?<filename>.+)\) = (?<digest>[a-f0-9]{128})/i,
     ],
     suffix: [".sha512"],
@@ -159,6 +159,7 @@ File.open(checksum_file, "r").each_line do |checksum_line|
   digest_defs.each { |definition|
     found_digest = find_digest(checksum_line, definition)
     if found_digest
+      puts found_digest.inspect
       check_digest(definition, found_digest, File.dirname(checksum_file))
       break
     end
