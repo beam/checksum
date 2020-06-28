@@ -4,6 +4,7 @@ require 'openssl'
 require 'zlib'
 
 module Zlib; module Digest; class CRC32
+    def digest_length; 4; end
     def update(chucnk); @crc32 = Zlib.crc32(chucnk, @crc32) end
     def hexdigest; @crc32.to_s(16); end
 end; end; end
@@ -130,7 +131,7 @@ def check_digest(definition, found_digest, search_path = ".")
     digester.update chunk
     output_line(definition[:title], found_digest[:filename], :check, { progress: ((progress_size.to_f / total_size) * 100).to_i , progress_size: progress_size, progress_time: Time.now.to_i - start_time })
   end
-  result = digester.hexdigest.downcase == found_digest[:digest].downcase
+  result = digester.hexdigest.downcase.rjust(digester.digest_length*2,"0") == found_digest[:digest].downcase
   output_line(definition[:title], found_digest[:filename], result ? :success : :failed, { progress_size: total_size, progress_time: Time.now.to_i - start_time })
   return result
 end
